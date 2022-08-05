@@ -90,12 +90,15 @@ static const char *termcmd[]  = { "gnome-terminal", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY|AltMask,               XK_Left,   focusmon,       { .i = -1 } },
-	{ MODKEY|AltMask,               XK_Right,  focusmon,       { .i = +1 } },
+	// { MODKEY|AltMask,               XK_Left,   focusmon,       { .i = -1 } },
+	// { MODKEY|AltMask,               XK_Right,  focusmon,       { .i = +1 } },
+
+	{ ControlMask|AltMask,          XK_Left,   focusnthmon,    { .i = 0 } },
+	{ ControlMask|AltMask,          XK_Right,  focusnthmon,    { .i = 1 } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_q,      quit,           { 0 } },
-	{ MODKEY,                       XK_Left,   focusstack,     { .i = +1 } },
-	{ MODKEY,                       XK_Right,  focusstack,     { .i = -1 } },
+	{ MODKEY,                       XK_Left,   focusstack,     { .i = -1 } },
+	{ MODKEY,                       XK_Right,  focusstack,     { .i = +1 } },
 	{ MODKEY,                       XK_1,      view,           { .ui = 1 } },
 	{ MODKEY,                       XK_2,      view,           { .ui = 2 } },
 	{ MODKEY,                       XK_3,      view,           { .ui = 4 } },
