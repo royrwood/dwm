@@ -93,8 +93,8 @@ static Key keys[] = {
 	// { MODKEY|AltMask,               XK_Left,   focusmon,       { .i = -1 } },
 	// { MODKEY|AltMask,               XK_Right,  focusmon,       { .i = +1 } },
 
-	{ MODKEY|ControlMask|AltMask,   XK_Left,   focusnthmon,    { .i = 0 } },
-	{ MODKEY|ControlMask|AltMask,   XK_Right,  focusnthmon,    { .i = 1 } },
+	{ MODKEY|ControlMask|AltMask,   XK_Left,   focusnthmon,    { .i = 1 } },
+	{ MODKEY|ControlMask|AltMask,   XK_Right,  focusnthmon,    { .i = 0 } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_q,      quit,           { 0 } },
 	{ MODKEY,                       XK_Left,   focusstack,     { .i = -1 } },
