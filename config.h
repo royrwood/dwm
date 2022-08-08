@@ -5,6 +5,12 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
+/*  Display modes of the tab bar: never shown, always shown, shown only in  */
+/*  monocle mode in the presence of several windows.                        */
+/*  Modes after showtab_nmodes are disabled.                                */
+enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
+static const int showtab			= showtab_auto;        /* Default tab bar show mode */
+static const int toptab				= False;               /* False means bottom tab bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
@@ -26,10 +32,10 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Iceweasel",  NULL,       NULL,       1 << 8,       0,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class       instance    title       tags mask     isfloating   monitor */
+	{ "Gimp",      NULL,       NULL,       0,            1,           -1 },
+	{ "Iceweasel", NULL,       NULL,       1,            0,           0 },
+	{ "Firefox",   NULL,       NULL,       1,            0,           0 },
 };
 
 /* layout(s) */
@@ -60,6 +66,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *roficmd[] = { "rofi", "-m", "-4", "-show", "drun" };
 // static const char *termcmd[]  = { "st", NULL };
 static const char *termcmd[]  = { "gnome-terminal", NULL };
 
@@ -95,16 +102,24 @@ static Key keys[] = {
 
 	{ MODKEY|ControlMask|AltMask,   XK_Left,   focusnthmon,    { .i = 1 } },
 	{ MODKEY|ControlMask|AltMask,   XK_Right,  focusnthmon,    { .i = 0 } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY|ShiftMask,             XK_q,      quit,           { 0 } },
 	{ MODKEY,                       XK_Left,   focusstack,     { .i = -1 } },
 	{ MODKEY,                       XK_Right,  focusstack,     { .i = +1 } },
-	{ MODKEY|ControlMask,           XK_Left,   view_adjacent,  { .i = -1 } },
-	{ MODKEY|ControlMask,           XK_Right,  view_adjacent,  { .i = +1 } },
+	{ MODKEY|ShiftMask,             XK_Left,   rotatestack,    {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_Right,  rotatestack,    {.i = -1 } },
+	{ MODKEY|AltMask,               XK_Left,   view_adjacent,  { .i = -1 } },
+	{ MODKEY|AltMask,               XK_Right,  view_adjacent,  { .i = +1 } },
 	{ MODKEY,                       XK_1,      view,           { .ui = 1 } },
 	{ MODKEY,                       XK_2,      view,           { .ui = 2 } },
 	{ MODKEY,                       XK_3,      view,           { .ui = 4 } },
 	{ MODKEY,                       XK_4,      view,           { .ui = 8 } },
+	{ MODKEY,                       XK_space,  spawn,          {.v = roficmd } },
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY|ShiftMask,             XK_q,      quit,           { 0 } },
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_w,      tabmode,        {-1} },
+
 };
 
 /* button definitions */
@@ -122,5 +137,6 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
 };
 
